@@ -178,6 +178,15 @@ tui_source_column = false
 .SS TUI viewer for HTML pages
 tui_html = w3m
 
+.SS TUI viewer for Markdown pages
+tui_md = less
+
+.SS TUI preview for Markdown pages
+tui_md_preview = cat
+
+.SS Folder of Markdown docs
+docs_path = ~/docs
+
 .SS Output postprocessing
 postprocess_man = bat -l man --color always --style plain
 

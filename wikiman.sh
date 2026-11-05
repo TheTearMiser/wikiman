@@ -35,6 +35,9 @@ tui_preview() {
 					gsub(/ .*$/,\"\",\$1);
 					printf(\"man -S %s -L %s %s 2>/dev/null $conf_postprocess_man\n\",sec,\$2,\$1);
 				}
+			} else if (\$NF ~ /\\.md\$/) {
+				gsub(\"\\\"\",\"\\\\\\\"\",\$NF);
+				printf(\"$conf_tui_md_preview \\\"%s\\\"\n\",\$NF);
 			} else {
 				gsub(\"\\\"\",\"\\\\\\\"\",\$NF);
 				printf(\"w3m \\\"%s\\\"\n\",\$NF);
@@ -190,6 +193,27 @@ init() {
 				value = \$2;
 			}; END { print value }" "$config_file" "$config_file_usr"
 		)"
+		conf_docs_path="$(
+			"$conf_awk" -F '=' "/^[ ,\t]*docs_path[ \t]*=/ {
+				gsub(/#.*/,\"\",\$2);
+				gsub(/^[ \t]+|[ \t]+\$/,\"\",\$2);
+				value = \$2;
+			}; END { print value }" "$config_file" "$config_file_usr"
+		)"
+		conf_tui_md="$(
+			"$conf_awk" -F '=' "/^[ ,\t]*tui_md[ \t]*=/ {
+				gsub(/#.*/,\"\",\$2);
+				gsub(/^[ \t]+|[ \t]+\$/,\"\",\$2);
+				value = \$2;
+			}; END { print value }" "$config_file" "$config_file_usr"
+		)"
+		conf_tui_md_preview="$(
+			"$conf_awk" -F '=' "/^[ ,\t]*tui_md_preview[ \t]*=/ {
+				gsub(/#.*/,\"\",\$2);
+				gsub(/^[ \t]+|[ \t]+\$/,\"\",\$2);
+				value = \$2;
+			}; END { print value }" "$config_file" "$config_file_usr"
+		)"
 	fi
 
 	# Widgets
@@ -258,6 +282,8 @@ init() {
 	conf_tui_keep_open="${conf_tui_keep_open:-false}"
 	conf_tui_source_column="${conf_tui_source_column:-false}"
 	conf_tui_html="${conf_tui_html:-w3m}"
+	conf_tui_md="${conf_tui_md:-less}"
+	conf_tui_md_preview="${conf_tui_md_preview:-cat}"
 
 	export conf_sources
 	export conf_fuzzy_finder
@@ -270,6 +296,9 @@ init() {
 	export conf_tui_keep_open
 	export conf_tui_source_column
 	export conf_tui_html
+	export conf_tui_md
+	export conf_tui_md_preview
+	export conf_docs_path
 	export conf_version
 	export conf_postprocess_man
 	export MANPAGER
@@ -347,6 +376,9 @@ picker_tui() {
 						gsub(/ .*$/,\"\",\$1);
 						printf(\"man -S %s -L %s %s $conf_postprocess_man\n\",sec,\$2,\$1);
 					}
+				} else if (\$NF ~ /\\.md\$/) {
+					gsub(\"\\\"\",\"\\\\\\\"\",\$NF);
+					printf(\"$conf_tui_md \\\"%s\\\"\n\",\$NF);
 				} else {
 					gsub(\"\\\"\",\"\\\\\\\"\",\$NF);
 					printf(\"$conf_tui_html \\\"%s\\\"\n\",\$NF);

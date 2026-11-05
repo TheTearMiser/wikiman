@@ -230,6 +230,15 @@ tui_source_column = true
 
 # Viewer for HTML pages
 tui_html = xdg-open
+
+# Viewer for Markdown pages
+tui_md = nvim -R
+
+# Previewer for Markdown pages
+tui_md_preview = glow -s dark
+
+# Folder of Markdown docs
+docs_path = ~/docs
 ```
 
 To list available languages, run these commands:
